@@ -1,10 +1,12 @@
 package ShutterServer;
 
+import javafx.application.Platform;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.scene.control.*;
 
 import java.io.IOException;
+import java.io.OutputStream;
 import java.io.PrintStream;
 import java.rmi.RemoteException;
 import java.util.Optional;
@@ -31,9 +33,7 @@ public class Controller {
     @FXML
     private TextArea ta_srvlog;
     @FXML
-    private Label lbl_heizungtemp;
-    @FXML
-    private Button btn_setTemp;
+    private Label lbl_shutterpos;
 
     public static PrintStream ps;
 
@@ -66,13 +66,19 @@ public class Controller {
             shutter1 = new Shutter();
         }
 
-        /*ps = new PrintStream(new OutputStream() {
+        ps = new PrintStream(new OutputStream() {
+
             @Override
             public void write(int i) throws IOException {
-                ta_srvlog.appendText(String.valueOf((char) i));
+                Platform.runLater(new Runnable() {
+                    @Override
+                    public void run() {
+                        ta_srvlog.appendText(String.valueOf((char) i));
+                    }
+                });
             }
         });
-        System.setOut(ps);*/
+        System.setOut(ps);
 
         /*Server wird gestartet*/
 
@@ -80,6 +86,7 @@ public class Controller {
         lbl_Serverip.setText(shutter1.getServerIP());
         lbl_Servername.setText(shutter1.shuttername);
         lbl_Serverstatus.setText(shutter1.serverstatus);
+        lbl_shutterpos.textProperty().bind(shutter1.ShutterPosition);
 
         StringBuilder sb = new StringBuilder();
         sb.append("");
@@ -107,15 +114,9 @@ public class Controller {
     public void BTNMoveup(ActionEvent event){
 
         if(!shutter1.isUpSrv()){
-            Alert alert = new Alert(Alert.AlertType.INFORMATION);
-            alert.setTitle("Information");
-            alert.setHeaderText("Neue Position des Shutter");
             shutter1.moveUpSrv();
             String neuPos = String.valueOf(shutter1.getPosSrv());
 
-            alert.setContentText(neuPos);
-
-            alert.showAndWait();
         }
         else{
             Alert alert = new Alert(Alert.AlertType.INFORMATION);
@@ -133,15 +134,8 @@ public class Controller {
     public void BTNMovedown(ActionEvent event){
 
         if(!shutter1.isDownSrv()){
-            Alert alert = new Alert(Alert.AlertType.INFORMATION);
-            alert.setTitle("Information");
-            alert.setHeaderText("Neue Position des Shutter");
             shutter1.moveDownSrv();
             String neuPos = String.valueOf(shutter1.getPosSrv());
-
-            alert.setContentText(neuPos);
-
-            alert.showAndWait();
         }
         else{
             Alert alert = new Alert(Alert.AlertType.INFORMATION);
@@ -154,16 +148,5 @@ public class Controller {
             alert.showAndWait();
         }
 
-    }
-
-    public void BTNGetPos(ActionEvent event)throws RemoteException{
-        Alert alert = new Alert(Alert.AlertType.INFORMATION);
-        alert.setTitle("Information");
-        alert.setHeaderText("Aktuelle Position des Shutter");
-        String aktuelleTemp = String.valueOf(shutter1.getPosSrv());
-
-        alert.setContentText(aktuelleTemp);
-
-        alert.showAndWait();
     }
 }

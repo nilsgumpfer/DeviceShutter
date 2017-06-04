@@ -34,9 +34,18 @@
               <content>
                 <AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="180.0" prefWidth="200.0">
                      <children>
-                        <Button fx:id="btn_moveUp" layoutX="454.0" layoutY="48.0" mnemonicParsing="false" onAction="#BTNMoveup" text="Move up" />
-                        <Button fx:id="btn_getPos" layoutX="454.0" layoutY="98.0" mnemonicParsing="false" onAction="#BTNGetPos" text="Get Position" />
-                        <Button fx:id="btn_moveDown" layoutX="455.0" layoutY="73.0" mnemonicParsing="false" onAction="#BTNMovedown" text="Move down" />
+                        <Button fx:id="btn_moveUp" layoutX="215.0" layoutY="78.0" mnemonicParsing="false" onAction="#BTNMoveup" text="Move up" />
+                        <Button fx:id="btn_moveDown" layoutX="290.0" layoutY="78.0" mnemonicParsing="false" onAction="#BTNMovedown" text="Move down" />
+                        <Label layoutX="215.0" layoutY="45.0" text="Current Position">
+                           <font>
+                              <Font size="19.0" />
+                           </font>
+                        </Label>
+                        <Label fx:id="lbl_shutterpos" layoutX="364.0" layoutY="40.0" text="-">
+                           <font>
+                              <Font size="27.0" />
+                           </font>
+                        </Label>
                      </children></AnchorPane>
               </content>
             </Tab>

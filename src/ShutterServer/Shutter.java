@@ -4,6 +4,9 @@ import ShutterServer.interfaces.ShutterClientInterface;
 import ShutterServer.interfaces.ShutterServerInterface;
 import ShutterServer.observer.AObservable;
 import ShutterServer.observer.IObserver;
+import javafx.application.Platform;
+import javafx.beans.property.SimpleStringProperty;
+import javafx.beans.property.StringProperty;
 
 import java.io.ByteArrayOutputStream;
 import java.net.InetAddress;
@@ -29,6 +32,7 @@ public class Shutter extends AObservable implements IObserver, ShutterServerInte
     public int serverport = 1099;
     public Registry rmiRegistry;
     private int currentPosition = 0;
+    public StringProperty ShutterPosition = new SimpleStringProperty("0");
 
 
     public Shutter() {
@@ -37,19 +41,37 @@ public class Shutter extends AObservable implements IObserver, ShutterServerInte
     public void moveUp(ShutterClientInterface c) {
         if (currentPosition < 5){
             currentPosition++;
+            Platform.runLater(new Runnable() {
+                @Override
+                public void run() {
+                    ShutterPosition.set(String.valueOf(currentPosition));
+                }
+            });
+
+            notifyObservers(this.currentPosition);
         }
     }
     public void moveDown(ShutterClientInterface c) {
         if (currentPosition > 0){
             currentPosition--;
+            Platform.runLater(new Runnable() {
+                @Override
+                public void run() {
+                    ShutterPosition.set(String.valueOf(currentPosition));
+                }
+            });
+
+            notifyObservers(this.currentPosition);
         }
     }
+
     public boolean isUp(ShutterClientInterface c){
         if (currentPosition == 5){
             return true;
         }
     return false;
     }
+
     public boolean isDown(ShutterClientInterface c){
         if (currentPosition == 0){
             return true;
@@ -71,11 +93,14 @@ public class Shutter extends AObservable implements IObserver, ShutterServerInte
     public void moveUpSrv() {
         if (currentPosition < 5){
             currentPosition++;
+            ShutterPosition.set(String.valueOf(currentPosition));
         }
     }
     public void moveDownSrv() {
         if (currentPosition > 0){
             currentPosition--;
+
+            ShutterPosition.set(String.valueOf(currentPosition));
         }
     }
     public boolean isUpSrv(){
