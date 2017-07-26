@@ -1,14 +1,15 @@
 package ShutterServer;
 
-import ShutterServer.interfaces.ShutterClientInterface;
 import ShutterServer.interfaces.ShutterServerInterface;
 import ShutterServer.observer.AObservable;
 import ShutterServer.observer.IObserver;
-import javafx.application.Platform;
+import de.thm.smarthome.global.beans.*;
+import de.thm.smarthome.global.enumeration.EDeviceManufacturer;
+import de.thm.smarthome.global.enumeration.EModelVariant;
+import de.thm.smarthome.global.enumeration.EPosition;
 import javafx.beans.property.SimpleStringProperty;
 import javafx.beans.property.StringProperty;
 
-import java.io.ByteArrayOutputStream;
 import java.net.InetAddress;
 import java.net.MalformedURLException;
 import java.net.UnknownHostException;
@@ -27,18 +28,34 @@ import java.rmi.server.UnicastRemoteObject;
  */
 public class Shutter extends AObservable implements IObserver, ShutterServerInterface{
 
+   /*Attribute/Beans*/
+
+    private PositionBean currentPosition = new PositionBean(EPosition.P0);
+    private PositionBean desiredPosition = new PositionBean(EPosition.P0);
+    private ModelVariantBean modelVariant;
+    private ManufacturerBean manufacturer;
+    private ActionModeBean actionModeBean;
+
+
+    /*Variable*/
+    public String genericName = null;
+    private String serialNumber = null;
+
     public String shuttername = null;
     public String serverstatus = null;
     public int serverport = 1099;
     public Registry rmiRegistry;
-    private int currentPosition = 0;
+    /*private int currentPosition = 0;*/
+
+
     public StringProperty ShutterPosition = new SimpleStringProperty("0");
 
 
     public Shutter() {
     }
 
-    public void moveUp(ShutterClientInterface c) {
+    //TO DO:Tim fragen wegen move up; currentPosition ist eine PositionBean
+   /* public void moveUp(ShutterClientInterface c) {
         if (currentPosition < 5){
             currentPosition++;
             Platform.runLater(new Runnable() {
@@ -51,6 +68,8 @@ public class Shutter extends AObservable implements IObserver, ShutterServerInte
             notifyObservers(this.currentPosition);
         }
     }
+
+
     public void moveDown(ShutterClientInterface c) {
         if (currentPosition > 0){
             currentPosition--;
@@ -77,16 +96,79 @@ public class Shutter extends AObservable implements IObserver, ShutterServerInte
             return true;
         }
         return false;
+    }*/
+
+
+    @Override
+    public PositionBean getCurrentPosition() throws RemoteException{
+
+        return getCurrentPosition();
     }
 
     @Override
-    public String getName(ShutterClientInterface c) {
+    public PositionBean getDesiredPosition() throws RemoteException{
+
+        return getDesiredPosition();
+    }
+
+    @Override
+    public ModelVariantBean getModelVariant() throws RemoteException{
+
+        return modelVariant;
+    }
+
+    @Override
+    public ManufacturerBean getManufacturer() throws RemoteException{
+
+        return manufacturer;
+    }
+
+    @Override
+    public ActionModeBean getActionMode() throws RemoteException{
+        return actionModeBean;
+    }
+
+    @Override
+    public String getGenericName()  throws RemoteException{
+
+        return this.genericName;
+    }
+
+    @Override
+    public String getSerialNumber()  throws RemoteException{
+
+        return this.serialNumber;
+    }
+
+   /* @Override
+    public String getName(ShutterClientInterface c) throws RemoteException {
         return shuttername;
     }
 
+    @Override
+    public void setGenericName(String genericName)throws RemoteException{
+        this.genericName = genericName;
+    }*/
 
-    /*Servermethoden*/
-    public int getPosSrv(){
+    //TO DO: sicher so fertig?! und was muss desiredPosition für ein Datentyp sein
+
+    @Override
+    public void setDesiredPosition(PositionBean new_desiredPosition)throws RemoteException{
+        desiredPosition = new_desiredPosition;
+    }
+
+    private void setCurrentPositionPosition(PositionBean new_currentPosition)throws RemoteException{
+        desiredPosition = new_currentPosition;
+    }
+
+    @Override
+    public void setGenericName(String genericName)throws RemoteException{
+        this.genericName = genericName;
+    }
+
+   /*Servermethoden*/
+   /*
+   public int getPosSrv(){
         return currentPosition;
     }
 
@@ -114,7 +196,7 @@ public class Shutter extends AObservable implements IObserver, ShutterServerInte
             return true;
         }
         return false;
-    }
+    }*/
 
     public String getNameSrv() {
         return shuttername;
