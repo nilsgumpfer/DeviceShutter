@@ -7,6 +7,7 @@ import de.thm.smarthome.global.beans.*;
 import de.thm.smarthome.global.enumeration.EDeviceManufacturer;
 import de.thm.smarthome.global.enumeration.EModelVariant;
 import de.thm.smarthome.global.enumeration.EPosition;
+import javafx.application.Platform;
 import javafx.beans.property.SimpleStringProperty;
 import javafx.beans.property.StringProperty;
 
@@ -48,7 +49,8 @@ public class Shutter extends AObservable implements IObserver, ShutterServerInte
     /*private int currentPosition = 0;*/
 
 
-    public StringProperty ShutterPosition = new SimpleStringProperty("0");
+    public StringProperty ShutterPosition = new SimpleStringProperty(String.valueOf(currentPosition.getPosition_Int()));
+    public StringProperty desiredShutterPosition = new SimpleStringProperty(String.valueOf(desiredPosition.getPosition_Int()));
 
 
     public Shutter() {
@@ -102,13 +104,13 @@ public class Shutter extends AObservable implements IObserver, ShutterServerInte
     @Override
     public PositionBean getCurrentPosition() throws RemoteException{
 
-        return getCurrentPosition();
+        return currentPosition;
     }
 
     @Override
     public PositionBean getDesiredPosition() throws RemoteException{
 
-        return getDesiredPosition();
+        return desiredPosition;
     }
 
     @Override
@@ -155,15 +157,83 @@ public class Shutter extends AObservable implements IObserver, ShutterServerInte
     @Override
     public void setDesiredPosition(PositionBean new_desiredPosition)throws RemoteException{
         desiredPosition = new_desiredPosition;
-    }
+        Platform.runLater(new Runnable() {
+            @Override
+            public void run() {
+                desiredShutterPosition.set(String.valueOf(desiredPosition.getPosition_Int()));
+            }
+        });
 
-    private void setCurrentPositionPosition(PositionBean new_currentPosition)throws RemoteException{
+
+        if(desiredPosition.getPosition_Int() < currentPosition.getPosition_Int()){
+            herunterfahren();
+        }
+        else if (desiredPosition.getPosition_Int() > currentPosition.getPosition_Int()){
+            hochfahren();
+
+    }}
+
+    /*private void setCurrentPositionPosition(PositionBean new_currentPosition)throws RemoteException{
         desiredPosition = new_currentPosition;
-    }
+    }*/
 
     @Override
     public void setGenericName(String genericName)throws RemoteException{
         this.genericName = genericName;
+    }
+
+    private void hochfahren(){
+
+        Thread hochfahren = new Thread(new Runnable() {
+            @Override
+            public void run() {
+                for (int i = currentPosition.getPosition_Int(); currentPosition.getPosition_Int() < desiredPosition.getPosition_Int(); i++) {
+
+                    PositionBean new_currentPosition = new PositionBean(i);
+                    //currentPosition = new_currentPosition;
+                    setCurrentPosition(new_currentPosition);
+
+                    try {
+                        Thread.sleep(500);
+                    } catch (InterruptedException e) {
+                    }
+                }
+            }
+
+        });
+        hochfahren.start();
+    }
+
+    private void setCurrentPosition(PositionBean new_currentPosition) {
+        currentPosition = new_currentPosition;
+        Platform.runLater(new Runnable() {
+            @Override
+            public void run() {
+                ShutterPosition.set(String.valueOf(currentPosition.getPosition_Int()));
+            }
+        });
+
+    }
+
+    private void herunterfahren(){
+
+        Thread herunterfahren = new Thread(new Runnable() {
+            @Override
+            public void run() {
+                for (int i = currentPosition.getPosition_Int(); currentPosition.getPosition_Int() > desiredPosition.getPosition_Int(); i--) {
+
+                    PositionBean new_currentPosition = new PositionBean(i);
+                    //currentPosition = new_currentPosition;
+                    setCurrentPosition(new_currentPosition);
+                    try {
+                        Thread.sleep(500);
+                    } catch (InterruptedException e) {
+                    }
+                }
+            }
+
+        });
+        herunterfahren.start();
     }
 
    /*Servermethoden*/

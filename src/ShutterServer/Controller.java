@@ -34,6 +34,8 @@ public class Controller {
     private TextArea ta_srvlog;
     @FXML
     private Label lbl_shutterpos;
+    @FXML
+    private Label lbl_desiredshutterpos;
 
     public static PrintStream ps;
 
@@ -86,7 +88,10 @@ public class Controller {
         lbl_Serverip.setText(shutter1.getServerIP());
         lbl_Servername.setText(shutter1.shuttername);
         lbl_Serverstatus.setText(shutter1.serverstatus);
+
+
         lbl_shutterpos.textProperty().bind(shutter1.ShutterPosition);
+        lbl_desiredshutterpos.textProperty().bind(shutter1.desiredShutterPosition);
 
         StringBuilder sb = new StringBuilder();
         sb.append("");
@@ -111,7 +116,7 @@ public class Controller {
         }
     }
 
-    public void BTNMoveup(ActionEvent event){
+    /*public void BTNMoveup(ActionEvent event){
 
         if(!shutter1.isUpSrv()){
             shutter1.moveUpSrv();
@@ -148,5 +153,5 @@ public class Controller {
             alert.showAndWait();
         }
 
-    }
+    }*/
 }
