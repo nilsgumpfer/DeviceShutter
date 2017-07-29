@@ -31,8 +31,8 @@ public class Shutter extends AObservable implements IObserver, ShutterServerInte
 
    /*Attribute/Beans*/
 
-    private PositionBean currentPosition = new PositionBean(EPosition.P0);
-    private PositionBean desiredPosition = new PositionBean(EPosition.P0);
+    private PositionBean currentPosition = new PositionBean(EPosition.P0_DOWN);
+    private PositionBean desiredPosition = new PositionBean(EPosition.P0_DOWN);
     private ModelVariantBean modelVariant;
     private ManufacturerBean manufacturer;
     private ActionModeBean actionModeBean;
@@ -42,7 +42,7 @@ public class Shutter extends AObservable implements IObserver, ShutterServerInte
     public String genericName = null;
     private String serialNumber = null;
 
-    public String shuttername = null;
+    public String shuttername = "SmartHomeAPI";
     public String serverstatus = null;
     public int serverport = 1099;
     public Registry rmiRegistry;
@@ -318,7 +318,7 @@ public class Shutter extends AObservable implements IObserver, ShutterServerInte
         }
     }
 
-    public String startServer(String shuttername) throws RemoteException {
+    public String startServer() throws RemoteException {
         ShutterServerInterface stub = (ShutterServerInterface) UnicastRemoteObject.exportObject(this, 0);
         rmiRegistry = LocateRegistry.createRegistry(serverport);
         try {
@@ -332,7 +332,6 @@ public class Shutter extends AObservable implements IObserver, ShutterServerInte
             //System.out.println(srvlog.toString());
             /*Bindet den Server an die folgende Adresse*/
             Naming.rebind("//127.0.0.1/"+shuttername, this);
-            this.shuttername = shuttername;
             this.serverstatus = "Gestartet";
             return "Server ist gestartet!";
 

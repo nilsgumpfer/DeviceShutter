@@ -44,7 +44,7 @@ public class Controller {
 
 
     public void BTNServerStarten(ActionEvent event) throws IOException {
-        TextInputDialog dialog = new TextInputDialog();
+        /*TextInputDialog dialog = new TextInputDialog();
         dialog.setTitle("Name des Shutter definieren");
         dialog.setHeaderText("Shutter anlegen");
         dialog.setContentText("Bitte diesem Shutter einen Namen geben:");
@@ -59,7 +59,7 @@ public class Controller {
             else{
                 return;
             }
-        }
+        }*/
 
         if(shutter1 == null){
             shutter1 = new Shutter();
@@ -84,7 +84,7 @@ public class Controller {
 
         /*Server wird gestartet*/
 
-        lbl_srvmsg.setText(shutter1.startServer(lbl_Servername.getText()));
+        lbl_srvmsg.setText(shutter1.startServer());
         lbl_Serverip.setText(shutter1.getServerIP());
         lbl_Servername.setText(shutter1.shuttername);
         lbl_Serverstatus.setText(shutter1.serverstatus);
