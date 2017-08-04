@@ -1,12 +1,12 @@
 package ShutterServer;
 
 import ShutterServer.interfaces.ShutterServerInterface;
-import ShutterServer.observer.AObservable;
-import ShutterServer.observer.IObserver;
+
 import de.thm.smarthome.global.beans.*;
-import de.thm.smarthome.global.enumeration.EDeviceManufacturer;
-import de.thm.smarthome.global.enumeration.EModelVariant;
 import de.thm.smarthome.global.enumeration.EPosition;
+import de.thm.smarthome.global.observer.AObservable;
+
+import de.thm.smarthome.global.observer.IObserver;
 import javafx.application.Platform;
 import javafx.beans.property.SimpleStringProperty;
 import javafx.beans.property.StringProperty;
@@ -36,6 +36,8 @@ public class Shutter extends AObservable implements IObserver, ShutterServerInte
     private ModelVariantBean modelVariant;
     private ManufacturerBean manufacturer;
     private ActionModeBean actionModeBean;
+    private String serverIP;
+    private ShutterServerInterface stub = null;
 
 
     /*Variable*/
@@ -196,6 +198,7 @@ public class Shutter extends AObservable implements IObserver, ShutterServerInte
                     try {
                         Thread.sleep(500);
                     } catch (InterruptedException e) {
+                        System.out.print(e.toString());
                     }
                 }
             }
@@ -228,6 +231,7 @@ public class Shutter extends AObservable implements IObserver, ShutterServerInte
                     try {
                         Thread.sleep(500);
                     } catch (InterruptedException e) {
+                        System.out.print(e.toString());
                     }
                 }
             }
@@ -273,7 +277,7 @@ public class Shutter extends AObservable implements IObserver, ShutterServerInte
     }
 
     @Override
-    public void update(AObservable o, Object change) {
+    public void update(Object o, Object change) {
 
     }
 
@@ -286,8 +290,8 @@ public class Shutter extends AObservable implements IObserver, ShutterServerInte
 
         } catch (UnknownHostException e) {
 
-            e.printStackTrace();
-            return null;
+            System.out.print(e.toString());
+            return "0.0.0.0";
         }
     }
 
@@ -304,23 +308,32 @@ public class Shutter extends AObservable implements IObserver, ShutterServerInte
             this.serverstatus = "Gestoppt";
             return "Server ist gestoppt!";
 
-        } catch (NoSuchObjectException e)
-        {
-            e.printStackTrace();
+        } catch (NoSuchObjectException e) {
+            System.out.print(e.toString());
             return "Fehler beim Stoppen des Servers!";
-        } catch (NotBoundException e)
+        }
+            catch (NotBoundException e)
         {
-            e.printStackTrace();
+            System.out.print(e.toString());
             return "Fehler beim Stoppen des Servers!";
-        } catch (RemoteException e) {
-            e.printStackTrace();
+        }
+
+        catch (RemoteException e) {
+            System.out.print(e.toString());
             return "Fehler beim Stoppen des Servers!";
         }
     }
 
+
     public String startServer() throws RemoteException {
-        ShutterServerInterface stub = (ShutterServerInterface) UnicastRemoteObject.exportObject(this, 0);
+        serverIP = getServerIP();
+        System.setProperty("java.rmi.server.hostname", serverIP);
+
+        if(stub == null){
+        stub = (ShutterServerInterface) UnicastRemoteObject.exportObject(this, 0);}
+
         rmiRegistry = LocateRegistry.createRegistry(serverport);
+
         try {
             /*if (System.getSecurityManager() == null) {
                 System.setProperty("java.security.policy", "file:C:\\Users\\Tim\\IdeaProjects\\HeizungServer\\out\\production\\HeizungServer\\HeizungServer\\server.policy");
@@ -337,7 +350,7 @@ public class Shutter extends AObservable implements IObserver, ShutterServerInte
 
 
         } catch (MalformedURLException e) {
-            e.printStackTrace();
+            System.out.print(e.toString());
             return "Fehler beim Starten des Servers!";
         }
 

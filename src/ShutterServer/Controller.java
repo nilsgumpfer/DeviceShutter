@@ -64,9 +64,9 @@ public class Controller {
         if(shutter1 == null){
             shutter1 = new Shutter();
         }
-        else{
+        /*else{
             shutter1 = new Shutter();
-        }
+        }*/
 
         ps = new PrintStream(new OutputStream() {
 
