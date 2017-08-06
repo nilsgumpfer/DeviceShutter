@@ -22,6 +22,7 @@ public interface ShutterServerInterface extends Remote {
     ActionModeBean getActionMode() throws RemoteException;
     String getGenericName() throws RemoteException;
     String getSerialNumber() throws RemoteException;
+    void attach(Object observer) throws RemoteException;
 
 
     /*public void moveUp(ShutterClientInterface c) throws RemoteException;
