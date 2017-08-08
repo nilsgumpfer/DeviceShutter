@@ -44,29 +44,10 @@ public class Controller {
 
 
     public void BTNServerStarten(ActionEvent event) throws IOException {
-        /*TextInputDialog dialog = new TextInputDialog();
-        dialog.setTitle("Name des Shutter definieren");
-        dialog.setHeaderText("Shutter anlegen");
-        dialog.setContentText("Bitte diesem Shutter einen Namen geben:");
-
-        if(!(lbl_Servername.getText().equals("-"))){
-
-        }
-        else{
-            Optional<String> result = dialog.showAndWait();
-            if(result.isPresent() == true && !result.get().equals("")){
-            lbl_Servername.setText(result.get());}
-            else{
-                return;
-            }
-        }*/
-
-        if(shutter1 == null){
+       if(shutter1 == null){
             shutter1 = new Shutter();
         }
-        /*else{
-            shutter1 = new Shutter();
-        }*/
+
 
         ps = new PrintStream(new OutputStream() {
 
@@ -115,43 +96,4 @@ public class Controller {
             btn_starteServer.setDisable(false);
         }
     }
-
-    /*public void BTNMoveup(ActionEvent event){
-
-        if(!shutter1.isUpSrv()){
-            shutter1.moveUpSrv();
-            String neuPos = String.valueOf(shutter1.getPosSrv());
-
-        }
-        else{
-            Alert alert = new Alert(Alert.AlertType.INFORMATION);
-            alert.setTitle("Information");
-            alert.setHeaderText("Neue Position des Shutter");
-            String neuPos = "Shutter ist bereits ganz oben!";
-
-            alert.setContentText(neuPos);
-
-            alert.showAndWait();
-        }
-
-    }
-
-    public void BTNMovedown(ActionEvent event){
-
-        if(!shutter1.isDownSrv()){
-            shutter1.moveDownSrv();
-            String neuPos = String.valueOf(shutter1.getPosSrv());
-        }
-        else{
-            Alert alert = new Alert(Alert.AlertType.INFORMATION);
-            alert.setTitle("Information");
-            alert.setHeaderText("Neue Position des Shutter");
-            String neuPos = "Shutter ist bereits ganz unten!";
-
-            alert.setContentText(neuPos);
-
-            alert.showAndWait();
-        }
-
-    }*/
 }

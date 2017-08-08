@@ -48,7 +48,7 @@ public class Shutter extends AObservable implements IObserver, ShutterServerInte
     public String serverstatus = null;
     public int serverport = 1099;
     public Registry rmiRegistry;
-    /*private int currentPosition = 0;*/
+
 
 
     public StringProperty ShutterPosition = new SimpleStringProperty(String.valueOf(currentPosition.getPosition_Int()));
@@ -57,50 +57,6 @@ public class Shutter extends AObservable implements IObserver, ShutterServerInte
 
     public Shutter() {
     }
-
-    //TO DO:Tim fragen wegen move up; currentPosition ist eine PositionBean
-   /* public void moveUp(ShutterClientInterface c) {
-        if (currentPosition < 5){
-            currentPosition++;
-            Platform.runLater(new Runnable() {
-                @Override
-                public void run() {
-                    ShutterPosition.set(String.valueOf(currentPosition));
-                }
-            });
-
-            notifyObservers(this.currentPosition);
-        }
-    }
-
-
-    public void moveDown(ShutterClientInterface c) {
-        if (currentPosition > 0){
-            currentPosition--;
-            Platform.runLater(new Runnable() {
-                @Override
-                public void run() {
-                    ShutterPosition.set(String.valueOf(currentPosition));
-                }
-            });
-
-            notifyObservers(this.currentPosition);
-        }
-    }
-
-    public boolean isUp(ShutterClientInterface c){
-        if (currentPosition == 5){
-            return true;
-        }
-    return false;
-    }
-
-    public boolean isDown(ShutterClientInterface c){
-        if (currentPosition == 0){
-            return true;
-        }
-        return false;
-    }*/
 
 
     @Override
@@ -144,17 +100,6 @@ public class Shutter extends AObservable implements IObserver, ShutterServerInte
         return this.serialNumber;
     }
 
-   /* @Override
-    public String getName(ShutterClientInterface c) throws RemoteException {
-        return shuttername;
-    }
-
-    @Override
-    public void setGenericName(String genericName)throws RemoteException{
-        this.genericName = genericName;
-    }*/
-
-    //TO DO: sicher so fertig?! und was muss desiredPosition für ein Datentyp sein
 
     @Override
     public void setDesiredPosition(PositionBean new_desiredPosition)throws RemoteException{
@@ -175,9 +120,6 @@ public class Shutter extends AObservable implements IObserver, ShutterServerInte
 
     }}
 
-    /*private void setCurrentPositionPosition(PositionBean new_currentPosition)throws RemoteException{
-        desiredPosition = new_currentPosition;
-    }*/
 
     @Override
     public void setGenericName(String genericName)throws RemoteException{
@@ -241,36 +183,6 @@ public class Shutter extends AObservable implements IObserver, ShutterServerInte
     }
 
    /*Servermethoden*/
-   /*
-   public int getPosSrv(){
-        return currentPosition;
-    }
-
-    public void moveUpSrv() {
-        if (currentPosition < 5){
-            currentPosition++;
-            ShutterPosition.set(String.valueOf(currentPosition));
-        }
-    }
-    public void moveDownSrv() {
-        if (currentPosition > 0){
-            currentPosition--;
-
-            ShutterPosition.set(String.valueOf(currentPosition));
-        }
-    }
-    public boolean isUpSrv(){
-        if (currentPosition == 5){
-            return true;
-        }
-        return false;
-    }
-    public boolean isDownSrv(){
-        if (currentPosition == 0){
-            return true;
-        }
-        return false;
-    }*/
 
     public String getNameSrv() {
         return shuttername;
@@ -297,13 +209,8 @@ public class Shutter extends AObservable implements IObserver, ShutterServerInte
 
     public String stopServer(){
         try {
-
-            //Registry rmiRegistry = LocateRegistry.getRegistry("127.0.0.1", serverport);
-            //HeizungServerInterface myService = (HeizungServerInterface) rmiRegistry.lookup(heizungname);
-
             rmiRegistry.unbind(shuttername);
 
-            //UnicastRemoteObject.unexportObject(myService, true);
             UnicastRemoteObject.unexportObject(rmiRegistry, true);
             this.serverstatus = "Gestoppt";
             return "Server ist gestoppt!";
@@ -335,14 +242,10 @@ public class Shutter extends AObservable implements IObserver, ShutterServerInte
         rmiRegistry = LocateRegistry.createRegistry(serverport);
 
         try {
-            /*if (System.getSecurityManager() == null) {
-                System.setProperty("java.security.policy", "file:C:\\Users\\Tim\\IdeaProjects\\HeizungServer\\out\\production\\HeizungServer\\HeizungServer\\server.policy");
-                System.setSecurityManager(new SecurityManager());
-
-            }*/
             /*Aktiviert und definiert das Logging des Servers*/
             RemoteServer.setLog(System.out);
-            //System.out.println(srvlog.toString());
+
+
             /*Bindet den Server an die folgende Adresse*/
             Naming.rebind("//127.0.0.1/"+shuttername, this);
             this.serverstatus = "Gestartet";
